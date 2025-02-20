@@ -126,9 +126,11 @@ class TradeAnalyzerApp:
         for player in team1_players[:6]:  # Limit results to 6
             frame = tk.Frame(self.team1_listbox_frame)
             label = tk.Label(frame, text=f"{player.name} ({player.team}) - {player.value}")
-            button = tk.Button(frame, text="+", command=lambda p=player: self.add_player_to_team1(p))
+            button1 = tk.Button(frame, text="+", command=lambda p=player: self.add_player_to_team1(p))
+            button2 = tk.Button(frame, text="+", command=lambda p=player: self.add_player_to_team2(p))
             label.pack(side=tk.LEFT, fill=tk.X, expand=True)
-            button.pack(side=tk.RIGHT)
+            button2.pack(side=tk.RIGHT)
+            button1.pack(side=tk.RIGHT)
             frame.pack(fill=tk.X)
 
         for player in team2_players[:6]:  # Limit results to 6
@@ -143,7 +145,8 @@ class TradeAnalyzerApp:
     def search_player1(self, event):
         search_term = self.search_entry1.get().lower()
         team1_players = [player for player in self.players if search_term in player.name.lower()]
-        self.update_listboxes(team1_players, [])
+        self.update_listboxes(team1_players, team1_players)
+
 
     # Method to search for players for Team 2 based on the search term
     def search_player2(self, event):
