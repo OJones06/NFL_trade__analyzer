@@ -25,41 +25,30 @@ class TradeAnalyzerApp:
         self.search_frame = tk.Frame(self.main_frame)
         self.search_frame.pack(fill=tk.X, pady=10)
 
-        self.search_label1 = tk.Label(self.search_frame, text="Team 1 gets...")
+        self.search_label1 = tk.Label(self.search_frame, text="Seach Players")
         self.search_label1.grid(row=0, column=0, padx=5)
         self.search_entry1 = tk.Entry(self.search_frame, width=30)
-        self.search_entry1.grid(row=0, column=1, padx=5)
+        self.search_entry1.grid(row=0, column=1, padx=5, sticky="nsew")
         self.search_entry1.bind("<KeyRelease>", self.search_player1)
-
-        self.search_label2 = tk.Label(self.search_frame, text="Team 2 gets...")
-        self.search_label2.grid(row=1, column=0, padx=5)
-        self.search_entry2 = tk.Entry(self.search_frame, width=30)
-        self.search_entry2.grid(row=1, column=1, padx=5)
-        self.search_entry2.bind("<KeyRelease>", self.search_player2)
 
         # Player Lists
         self.players_frame = tk.Frame(self.main_frame)
         self.players_frame.pack(fill=tk.BOTH, expand=True, pady=10)
-
+        
         self.team1_frame = tk.LabelFrame(self.players_frame, text="Team 1", padx=10, pady=10)
-        self.team1_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+        self.team1_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew", columnspan=2)
         self.team1_listbox_frame = tk.Frame(self.team1_frame)
         self.team1_listbox_frame.pack(fill=tk.BOTH, expand=True)
-
-        self.team2_frame = tk.LabelFrame(self.players_frame, text="Team 2", padx=10, pady=10)
-        self.team2_frame.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
-        self.team2_listbox_frame = tk.Frame(self.team2_frame)
-        self.team2_listbox_frame.pack(fill=tk.BOTH, expand=True)
 
         self.selected_team1_frame = tk.LabelFrame(self.players_frame, text="Selected Team 1 Players", padx=10, pady=10)
         self.selected_team1_frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
         self.selected_team1_listbox_frame = tk.Frame(self.selected_team1_frame)
-        self.selected_team1_listbox_frame.pack(fill=tk.BOTH, expand=True)
+        self.selected_team1_listbox_frame.pack(fill=tk.BOTH, expand=False)
 
         self.selected_team2_frame = tk.LabelFrame(self.players_frame, text="Selected Team 2 Players", padx=10, pady=10)
         self.selected_team2_frame.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
         self.selected_team2_listbox_frame = tk.Frame(self.selected_team2_frame)
-        self.selected_team2_listbox_frame.pack(fill=tk.BOTH, expand=True)
+        self.selected_team2_listbox_frame.pack(fill=tk.BOTH, expand=False)
 
         # Trade Summary
         self.summary_frame = tk.Frame(self.main_frame)
@@ -69,7 +58,7 @@ class TradeAnalyzerApp:
         self.summary_label.pack()
 
         self.summary_text = tk.Text(self.summary_frame, height=5, width=80)
-        self.summary_text.pack()
+        self.summary_text.pack(anchor="center")
 
         # Favored Team Bar
         self.favored_team_frame = tk.Frame(self.main_frame)
@@ -120,25 +109,15 @@ class TradeAnalyzerApp:
     def update_listboxes(self, team1_players, team2_players):
         for widget in self.team1_listbox_frame.winfo_children():
             widget.destroy()
-        for widget in self.team2_listbox_frame.winfo_children():
-            widget.destroy()
 
         for player in team1_players[:6]:  # Limit results to 6
             frame = tk.Frame(self.team1_listbox_frame)
             label = tk.Label(frame, text=f"{player.name} ({player.team}) - {player.value}")
             button1 = tk.Button(frame, text="+", command=lambda p=player: self.add_player_to_team1(p))
             button2 = tk.Button(frame, text="+", command=lambda p=player: self.add_player_to_team2(p))
+            button1.pack(side=tk.LEFT)
             label.pack(side=tk.LEFT, fill=tk.X, expand=True)
             button2.pack(side=tk.RIGHT)
-            button1.pack(side=tk.RIGHT)
-            frame.pack(fill=tk.X)
-
-        for player in team2_players[:6]:  # Limit results to 6
-            frame = tk.Frame(self.team2_listbox_frame)
-            label = tk.Label(frame, text=f"{player.name} ({player.team}) - {player.value}")
-            button = tk.Button(frame, text="+", command=lambda p=player: self.add_player_to_team2(p))
-            label.pack(side=tk.LEFT, fill=tk.X, expand=True)
-            button.pack(side=tk.RIGHT)
             frame.pack(fill=tk.X)
 
     # Method to search for players for Team 1 based on the search term
@@ -146,13 +125,6 @@ class TradeAnalyzerApp:
         search_term = self.search_entry1.get().lower()
         team1_players = [player for player in self.players if search_term in player.name.lower()]
         self.update_listboxes(team1_players, team1_players)
-
-
-    # Method to search for players for Team 2 based on the search term
-    def search_player2(self, event):
-        search_term = self.search_entry2.get().lower()
-        team2_players = [player for player in self.players if search_term in player.name.lower()]
-        self.update_listboxes([], team2_players)
 
     # Method to add a player to Team 1
     def add_player_to_team1(self, player):
