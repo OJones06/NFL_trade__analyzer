@@ -1,2 +1,2 @@
-# NFL_trade__analyzer
-Trade Analyzer project
+# NFL Trade Analyzer
+By: Owen Jones
